@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ફોન OTP ચકાસણી</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: url(hi.jpg) no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 360px;
+    }
+
+    h2 {
+      color: #2d2d2d;
+      font-size: 22px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input[type="tel"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border: 1.5px solid #3a47ff;
+      border-radius: 6px;
+    }
+
+    input:focus {
+      border-color: #5c00a3;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #3a47ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2b36cc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: red;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    .success {
+      color: green;
+    }
+
+    p {
+      margin-top: 10px;
+      color: #333;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    span#displayPhone {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ફોન નંબર ચકાસણી</h2>
+
+    <form id="phoneForm">
+      <input type="tel" id="phoneInput" placeholder="તમારો મોબાઇલ નંબર દાખલ કરો" pattern="\d{10}" required />
+      <button type="submit">OTP મોકલો</button>
+    </form>
+
+    <form id="otpForm" class="hidden">
+      <p>OTP મોકલવામાં આવ્યો છે: <span id="displayPhone"></span></p>
+      <input type="text" id="otpInput" placeholder="OTP દાખલ કરો" maxlength="4" required />
+      <div class="message" id="otpMessage"></div>
+      <button type="submit">OTP ચકાસો</button>
+    </form>
+  </div>
+
+  <script>
+    const phoneForm = document.getElementById('phoneForm');
+    const otpForm = document.getElementById('otpForm');
+    const phoneInput = document.getElementById('phoneInput');
+    const otpInput = document.getElementById('otpInput');
+    const displayPhone = document.getElementById('displayPhone');
+    const otpMessage = document.getElementById('otpMessage');
+
+    const DUMMY_OTP = "1234";
+
+    phoneForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const phone_no = phoneInput.value.trim();
+      if (!/^\d{10}$/.test(phone_no)) {
+        alert('કૃપા કરીને યોગ્ય 10 અંકનો મોબાઇલ નંબર દાખલ કરો.');
+        return;
+      }
+      phoneForm.classList.add('hidden');
+      otpForm.classList.remove('hidden');
+      displayPhone.textContent = phone_no;
+      otpInput.value = "";
+      otpMessage.textContent = "";
+      otpInput.focus();
+    });
+
+    otpForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const enteredOtp = otpInput.value.trim();
+      if (enteredOtp === DUMMY_OTP) {
+        const phone_no = displayPhone.textContent;
+        window.location.href = 'view.php?contact_no=' + encodeURIComponent(phone_no) + '&otp=' + DUMMY_OTP;
+      } else {
+        otpMessage.textContent = "ખોટો OTP દાખલ કર્યો છે, ફરી પ્રયત્ન કરો.";
+        otpMessage.classList.remove('success');
+        otpMessage.classList.add('message');
+        otpInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>
+

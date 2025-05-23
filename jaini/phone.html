@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Phone OTP Verification</title>
+    <style>
+        body {
+            background: url(hi.jpg) no-repeat center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #161618;
+            font-size: 24px;
+        }
+
+        input[type="tel"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 2px solid #3a47ff;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="tel"]:focus,
+        input[type="text"]:focus {
+            border-color: #671181;
+            outline: none;
+        }
+
+        button {
+            background-color: #230a44;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: #2658c1;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            font-size: 14px;
+            color: #d9534f;
+            margin-bottom: 10px;
+            min-height: 18px;
+        }
+
+        .success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Phone Number Verification</h2>
+
+        <form id="phoneForm">
+            <input type="tel" id="phoneInput" placeholder="Enter 10-digit phone number" pattern="\d{10}" required autocomplete="off" />
+            <button type="submit">Send OTP</button>
+        </form>
+
+        <form id="otpForm" class="hidden">
+            <p style="color:white">OTP sent to <span id="displayPhone"></span></p>
+            <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="4" required autocomplete="off" />
+            <div class="message" id="otpMessage"></div>
+            <button type="submit">Verify OTP</button>
+        </form>
+    </div>
+
+    <script>
+        const phoneForm = document.getElementById('phoneForm');
+        const otpForm = document.getElementById('otpForm');
+        const phoneInput = document.getElementById('phoneInput');
+        const otpInput = document.getElementById('otpInput');
+        const displayPhone = document.getElementById('displayPhone');
+        const otpMessage = document.getElementById('otpMessage');
+
+        const DUMMY_OTP = "1234";
+
+        phoneForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phone_no = phoneInput.value.trim();
+            if (!/^\d{10}$/.test(phone_no)) {
+                alert('Please enter a valid 10-digit phone number.');
+                return;
+            }
+            phoneForm.classList.add('hidden');
+            otpForm.classList.remove('hidden');
+            displayPhone.textContent = phone_no;
+            otpInput.value = "";
+            otpMessage.textContent = "";
+            otpInput.focus();
+        });
+
+        otpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const enteredOtp = otpInput.value.trim();
+            if (enteredOtp === DUMMY_OTP) {
+                const phone_no = displayPhone.textContent;
+                window.location.href = 'view.php?contact_no=' + encodeURIComponent(phone_no) + '&otp=' + DUMMY_OTP;
+            } else {
+                otpMessage.textContent = "Invalid OTP, please try again.";
+                otpMessage.classList.remove('success');
+                otpMessage.classList.add('message');
+                otpInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
